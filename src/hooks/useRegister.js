@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { auth } from "../firebase/config";
+import { auth, db } from "../firebase/config";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useGlobalContext } from "./useGlobalContext";
 import toast from "react-hot-toast";
+import { setDoc, doc } from "firebase/firestore";
 
 export const useRegister = () => {
   const { dispatch } = useGlobalContext();
@@ -19,7 +20,19 @@ export const useRegister = () => {
 `,
       });
       const user = req.user;
-      toast.success(`Welcome to ${user.displayName}`);
+      await setDoc(doc(db, "users", user.uid), {
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        online: true,
+      });
+
+      // await setDoc(doc(db, "users", user.uid), {
+      //   displayName: user.displayName,
+      //   email: user.email,
+      //   online: true,
+      // });
+
+      toast.success(`Welcome ${user.displayName}`);
 
       dispatch({ type: "LOGIN", payload: user });
       setData(user);
@@ -31,6 +44,6 @@ export const useRegister = () => {
       setIsPending(false);
     }
   };
-  
+
   return { isPending, data, register };
 };

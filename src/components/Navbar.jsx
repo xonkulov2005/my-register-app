@@ -10,7 +10,7 @@ function Navbar() {
     <header className="bg-base-200">
       <div className="navbar main-container">
         <div className="navbar-start">
-          <Link className="btn btn-netural" to="/">
+          <Link className="btn btn-ghost btn-outline btn-xl" to="/">
             Logo
           </Link>
         </div>

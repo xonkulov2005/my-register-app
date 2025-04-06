@@ -1,8 +1,15 @@
 import { Link } from "react-router-dom";
 import FormInput from "../components/FormInput";
 import { useLogin } from "../hooks/useLogin";
+import { useGoogleProvider } from "../hooks/useGoogleProvider";
+
 function Login() {
   const { data, isPending, register } = useLogin();
+  const {
+    data: _data,
+    googleProvider,
+    isPending: _isPending,
+  } = useGoogleProvider();
   function handleSubmit(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -28,9 +35,24 @@ function Login() {
               >
                 Login
               </button>
-              <button type="button" className="btn btn-secondary grow">
-                Google
-              </button>
+              {!_isPending && (
+                <button
+                  onClick={googleProvider}
+                  type="button"
+                  className="btn btn-secondary grow"
+                >
+                  Google
+                </button>
+              )}
+              {_isPending && (
+                <button
+                  type="button"
+                  className="btn btn-secondary grow"
+                  disabled
+                >
+                  Loading...
+                </button>
+              )}
             </div>
             <p className="text-center opacity-75">
               If you don`t have account

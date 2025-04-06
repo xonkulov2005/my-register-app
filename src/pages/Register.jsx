@@ -1,9 +1,15 @@
 import { Link } from "react-router-dom";
 import FormInput from "../components/FormInput";
 import { useRegister } from "../hooks/useRegister";
+import { useGoogleProvider } from "../hooks/useGoogleProvider";
 
 function Register() {
   const { data, isPending, register } = useRegister();
+  const {
+    data: _data,
+    googleProvider,
+    isPending: _isPending,
+  } = useGoogleProvider();
   function handleSubmit(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -31,9 +37,24 @@ function Register() {
               >
                 {isPending ? "Registering..." : "Register"}
               </button>
-              <button type="button" className="btn btn-secondary grow">
-                Google
-              </button>
+              {!_isPending && (
+                <button
+                  onClick={googleProvider}
+                  type="button"
+                  className="btn btn-secondary grow"
+                >
+                  Google
+                </button>
+              )}{" "}
+              {_isPending && (
+                <button
+                  type="button"
+                  className="btn btn-secondary grow"
+                  disabled
+                >
+                  Loading...
+                </button>
+              )}
             </div>
             <p className="text-center opacity-75">
               If you have an account
