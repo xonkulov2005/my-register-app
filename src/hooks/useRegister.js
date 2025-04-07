@@ -13,33 +13,27 @@ export const useRegister = () => {
   const register = async (displayName, email, password) => {
     try {
       setIsPending(true);
-      const req = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(auth.currentUser, {
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+
+      await updateProfile(res.user, {
         displayName,
-        photoURL: `https://api.dicebear.com/9.x/open-peeps/svg?seed=${displayName}
-`,
+        photoURL: `https://api.dicebear.com/9.x/open-peeps/svg?seed=${displayName}`,
       });
-      const user = req.user;
+
+      const user = res.user;
+
       await setDoc(doc(db, "users", user.uid), {
         displayName: user.displayName,
         photoURL: user.photoURL,
         online: true,
       });
 
-      // await setDoc(doc(db, "users", user.uid), {
-      //   displayName: user.displayName,
-      //   email: user.email,
-      //   online: true,
-      // });
-
       toast.success(`Welcome ${user.displayName}`);
-
       dispatch({ type: "LOGIN", payload: user });
       setData(user);
-      console.log(user);
     } catch (error) {
       toast.error(error.message);
-      console.log(error.message);
+      console.log("Register error:", error.message);
     } finally {
       setIsPending(false);
     }
